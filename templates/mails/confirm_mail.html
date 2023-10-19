@@ -1,0 +1,35 @@
+<main>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+  </style>
+  <article
+    style="
+      width: 50%;
+      margin: auto;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 2px solid #ebebeb;
+      padding: 20px 30px 30px 30px;
+      color: black;
+      font-family: 'Montserrat', sans-serif;
+    "
+  >
+    {% load crispy_forms_tags %}
+
+    <p>Dear,</p>
+
+    <p>Thank you for creating an account.</p>
+
+    <p>Activate Account</p>
+
+    <p>
+      You can copy and paste the following verification code on the activation
+      page:
+    </p>
+
+    <p>{{ verification_code }}</p>
+
+    <p>Regards,</p>
+    <p>Emotell</p>
+  </article>
+</main>
