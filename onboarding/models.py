@@ -24,6 +24,7 @@ class Onboarding(models.Model):
     is_push_notification = models.BooleanField(default=False)
     is_sms = models.BooleanField(default=False)
     is_email = models.BooleanField(default=False)
+    status = models.IntegerField(blank=False,default=0)
     
     class Meta:
         db_table = 'onboarding'
