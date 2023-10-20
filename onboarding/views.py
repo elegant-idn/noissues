@@ -35,26 +35,20 @@ class CreateBoarding(views.APIView):
 class CreatePartner(views.APIView):
     permission_classes = (IsAuthenticated,)
     def post(self, request, *args, **kwargs):
-        for data in  json.loads(request.data.get("partners")):
-            partner = Partner(
-                board = Onboarding.objects.get(pk = request.data.get("board_id")),
-                email = data['email'],
-                access_level = data['access_level']
-            )
-            partner.save()
+        partner = Partner(
+            board = Onboarding.objects.get(pk = request.data.get("board_id")),
+            email = request.data.get("email"),
+            access_level = request.data.get("access_level")
+        )
+        partner.save()
         return Response(status=status.HTTP_200_OK)
 
 
 class GetBoarding(views.APIView):
     permission_classes = (IsAuthenticated,)
     def post(self, request, *args, **kwargs):
-        boarding = Onboarding.objects.get(author_id = request.data.get("author"))
-        partners = Partner.objects.filter(board_id = boarding.id)
-        response_data = {
-            "boarding" : serializers.serialize('json', [boarding])[1:-1],
-            "partners" : json.dumps(list(partners.values())),
-        }
-        return Response(data=response_data, status=status.HTTP_200_OK)
+        boardings = Onboarding.objects.filter(author_id = request.data.get("author")).prefetch_related("partner_set")
+        return Response(data=json.dumps(list(boardings.values())), status=status.HTTP_200_OK)
 
 class CreateMock(views.APIView):
     permission_classes = (IsAuthenticated,)

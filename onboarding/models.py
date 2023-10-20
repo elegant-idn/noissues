@@ -34,6 +34,7 @@ class Partner(models.Model):
     board = models.ForeignKey(Onboarding,on_delete=models.CASCADE)
     email = models.CharField(blank=False, null=False)
     access_level = models.BooleanField(default=False)
+    is_accepted = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'partners'

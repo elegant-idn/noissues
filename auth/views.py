@@ -21,6 +21,13 @@ from auth.utils import send_email
 
 import jwt
 # Create your views here.
+class ChangePassword(views.APIView):
+    def post(self, request, *arges, **kwargs):
+        user = get_user_model().objects.get(email=request.data.get("email"))
+        user.set_password(request.data.get("password"))
+        user.save()
+        return Response(status=status.HTTP_200_OK)
+        
 class GetUsers(views.APIView):
     def get(self, request, *args, **kwargs):
         users = get_user_model().objects.all().values()
