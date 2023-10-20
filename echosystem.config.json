@@ -3,7 +3,7 @@
       [{
         "name": "djnago_with_pm2",
         "script": "manage.py runserver",
-        "args": "8080",
+        "args": ["runserver", "127.0.0.1:8080"],
         "exec_mode": "fork",
         "instances": "1",
         "wait_ready": true,
