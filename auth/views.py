@@ -14,7 +14,6 @@ from django.urls import reverse
 import json
 
 from writers.serializers import WriterSerializer, SignupSerializer
-from writers.views import message
 
 # from auth.token import email_auth_token
 from auth.utils import send_email
@@ -62,7 +61,6 @@ class SignUpView(views.APIView):
             verification_code = str(random.randint(100000, 999999))
             user.verification_code = verification_code
             user.save()
-            message(f"{user.name} created an account.")
 
             # START: send email auth mail
             token = RefreshToken.for_user(user).access_token
@@ -78,7 +76,6 @@ class SignUpView(views.APIView):
             return Response(data=user.pk,status=status_code)
             # END: send email auth mail
 
-        message(serializer.errors)
         return Response(
             data=serializer.errors, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION
         )
@@ -92,7 +89,6 @@ class SignInView(views.APIView):
         if user is not None:
             if user.is_email_verified:
                 login(request, user)
-                message(f"{user.name} ({user.pk}) logged in.")
                 serializer = WriterSerializer(user)
                 token = RefreshToken.for_user(user)
                 result = serializer.data
@@ -107,7 +103,6 @@ class SignInView(views.APIView):
                     "msg": "A verification mail is send to your email address. Please verify your email address to Login."
                 },
             )
-        message("User not found.")
         return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
 class SignOutView(views.APIView):
@@ -115,12 +110,10 @@ class SignOutView(views.APIView):
 
     def post(self, request, **kwargs):
         refresh_token = request.data.get("refresh")
-        # message(refresh_token)
         token = RefreshToken(refresh_token)
         token.blacklist()
 
         user = get_user_model().objects.get(pk=request.data.get("pk"))
-        message(f"{user.name} ({user.pk}) logged out. ")
         logout(request)
 
         return Response(status=status.HTTP_200_OK)
@@ -135,10 +128,8 @@ class VerifyEmailView(views.APIView):
             user = None
         if user is not None:
             user.is_email_verified = True
-            message(f"{user.name} ({user.pk}) activated their account.")
             user.save()
             link = f"{settings.CLIENT_URL}/emailconfirmation/success/{user.pk}/"
             return redirect(link)
-        message("Invalid email verification link recieved.")
         link = f"{settings.CLIENT_URL}/emailconfirmation/failure/"
         return redirect(link)

@@ -70,7 +70,6 @@ class DeleteWriterAPI(views.APIView):
         password = request.data.get("password", None)
         user = authenticate(email = email, password = password)
         if user is not None:
-            message(f"{user.name} ({user.pk}) deleted their account")
             user.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)

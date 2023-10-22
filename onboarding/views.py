@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
 from onboarding.models import Onboarding, Mock, Partner
-from writers.views import message
 
 
 # Create your views here
