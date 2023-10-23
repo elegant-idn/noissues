@@ -8,13 +8,17 @@ except ImportError:
 
 #Create your models here.
 ## onboarding model
+
+def default_array():
+    return []
+
 class Onboarding(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     desired_outcome = models.CharField(blank=False, null=False)
     success_identity = models.CharField(blank=False, null=False)
     success_matrics = models.CharField(blank=False, null=False)
     reward_options = models.CharField(blank=False, null=False)
-    rewards = ArrayField(models.CharField(), default=[])
+    rewards = ArrayField(models.CharField(), default=default_array)
     outcome_importance = models.CharField(blank=False, null=False)
     outcome_period = models.CharField(blank=False, null=False)
     my_reason = models.CharField(blank=False, null=False)
