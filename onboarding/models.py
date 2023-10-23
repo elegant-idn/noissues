@@ -14,7 +14,7 @@ class Onboarding(models.Model):
     success_identity = models.CharField(blank=False, null=False)
     success_matrics = models.CharField(blank=False, null=False)
     reward_options = models.CharField(blank=False, null=False)
-    reward = models.CharField(blank=False, null=False)
+    rewards = ArrayField(models.CharField(), default=[])
     outcome_importance = models.CharField(blank=False, null=False)
     outcome_period = models.CharField(blank=False, null=False)
     my_reason = models.CharField(blank=False, null=False)

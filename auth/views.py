@@ -10,7 +10,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.shortcuts import redirect
 from django.conf import settings
-from django.urls import reverse
+from django.core import serializers
 import json
 
 from writers.serializers import WriterSerializer, SignupSerializer
@@ -26,11 +26,21 @@ class ChangePassword(views.APIView):
         user.set_password(request.data.get("password"))
         user.save()
         return Response(status=status.HTTP_200_OK)
+    
+class UpdateProfile(views.APIView):
+    def post(self, request, *args, **kwargs):
+        user = get_user_model().objects.get(pk=request.data.get("pk"))
+        user.first_name = request.data.get("first_name")
+        user.last_name = request.data.get("last_name")
+        user.name = request.data.get("name")
+        user.email = request.data.get("email")
+        user.save()
+        return Response(status=status.HTTP_200_OK)
         
-class GetUsers(views.APIView):
-    def get(self, request, *args, **kwargs):
-        users = get_user_model().objects.all().values()
-        return Response(data=json.dumps(list(users), default=str),status=status.HTTP_200_OK)
+class GetUser(views.APIView):
+    def post(self, request, *args, **kwargs):
+        user = get_user_model().objects.get(pk=request.data.get("pk"))
+        return Response(data=serializers.serialize('json', [user]),status=status.HTTP_200_OK)
 
 class VerifyCode(views.APIView):
     def post(self, request, *args, **kwargs):
@@ -57,6 +67,8 @@ class SignUpView(views.APIView):
         if serializer.is_valid():
             user = serializer.save()
             user.name = user.name.title()
+            user.first_name = request.data.get("first_name")
+            user.last_name = request.data.get("last_name")
             user.is_active = True
             verification_code = str(random.randint(100000, 999999))
             user.verification_code = verification_code
