@@ -35,12 +35,12 @@ class UpdateProfile(views.APIView):
         user.name = request.data.get("name")
         user.email = request.data.get("email")
         user.save()
-        return Response(status=status.HTTP_200_OK)
+        return Response(data="The profile is updated.",status=status.HTTP_200_OK)
         
 class GetUser(views.APIView):
     def post(self, request, *args, **kwargs):
         user = get_user_model().objects.get(pk=request.data.get("pk"))
-        return Response(data=serializers.serialize('json', [user]),status=status.HTTP_200_OK)
+        return Response(data=json.loads(serializers.serialize('json', [user]))[0]["fields"],status=status.HTTP_200_OK)
 
 class VerifyCode(views.APIView):
     def post(self, request, *args, **kwargs):
@@ -48,9 +48,9 @@ class VerifyCode(views.APIView):
         if user.verification_code == request.data.get("code"):
             user.is_email_verified = True
             user.save()
-            return Response(status=status.HTTP_200_OK)
+            return Response(data="The user is verified.",status=status.HTTP_200_OK)
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(data="The verification code is not correct.",status=status.HTTP_401_UNAUTHORIZED)
 
 class ForgotPassword(views.APIView):
     def post(self, request, *args, **kwargs):
@@ -115,7 +115,7 @@ class SignInView(views.APIView):
                     "msg": "A verification mail is send to your email address. Please verify your email address to Login."
                 },
             )
-        return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        return Response(data="The email or password is incorrect.",status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
 class SignOutView(views.APIView):
     # permission_classes = (IsAuthenticated,)
